@@ -199,4 +199,19 @@ class StepViewController: UIViewController {
             }
         }
     }
+    
+    @IBAction func btnStepDetails(_ sender: UIButton) {
+        let storyboard = UIStoryboard(name: "StepDetails", bundle: nil)
+        
+        if let stepDetailsVC = storyboard.instantiateViewController(withIdentifier: "StepsDetailsViewController") as? StepsDetailsViewController {
+            
+            stepDetailsVC.modalPresentationStyle = .fullScreen
+            stepDetailsVC.modalTransitionStyle = .crossDissolve
+
+            self.present(stepDetailsVC, animated: true, completion: nil)
+        } else {
+            print("Error: No se pudo instanciar StepsDetailsViewController. Revisa el Storyboard ID.")
+        }
+    }
+    
 }

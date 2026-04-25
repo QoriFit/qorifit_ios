@@ -107,8 +107,8 @@
                                 </subviews>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                             </view>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Lunes, 6 de Mayo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m9P-Ze-JpA">
-                                <rect key="frame" x="20" y="149" width="142" height="21"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Lunes, 6 de Mayo" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="m9P-Ze-JpA">
+                                <rect key="frame" x="10" y="118" width="373" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="textColor"/>
                                 <nil key="highlightedColor"/>
@@ -134,8 +134,11 @@
                             <constraint firstItem="85Y-97-lId" firstAttribute="trailing" secondItem="lLv-ca-DQR" secondAttribute="trailing" id="YM2-uF-d4X"/>
                             <constraint firstItem="UwD-rd-3q3" firstAttribute="leading" secondItem="lLv-ca-DQR" secondAttribute="leading" constant="20" id="Z2h-j2-Q2R"/>
                             <constraint firstItem="UwD-rd-3q3" firstAttribute="top" secondItem="lLv-ca-DQR" secondAttribute="top" constant="20" id="dVy-tW-TMD"/>
+                            <constraint firstItem="m9P-Ze-JpA" firstAttribute="top" secondItem="lLv-ca-DQR" secondAttribute="top" id="ezg-F7-K21"/>
                             <constraint firstItem="85Y-97-lId" firstAttribute="top" secondItem="m9P-Ze-JpA" secondAttribute="bottom" constant="5" id="iUm-6T-m6q"/>
+                            <constraint firstItem="lLv-ca-DQR" firstAttribute="trailing" secondItem="m9P-Ze-JpA" secondAttribute="trailing" constant="10" id="lxm-KL-Kte"/>
                             <constraint firstItem="lLv-ca-DQR" firstAttribute="trailing" secondItem="UwD-rd-3q3" secondAttribute="trailing" constant="20" id="pDs-oA-4CT"/>
+                            <constraint firstItem="m9P-Ze-JpA" firstAttribute="leading" secondItem="lLv-ca-DQR" secondAttribute="leading" constant="10" id="ppF-q8-iGi"/>
                         </constraints>
                     </view>
                     <tabBarItem key="tabBarItem" title="Inicio" id="h4w-Vc-Z4S">
@@ -528,7 +531,10 @@
                                 <rect key="frame" x="76" y="661" width="252" height="35"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <state key="normal" title="Button"/>
-                                <buttonConfiguration key="configuration" style="tinted" title="Button"/>
+                                <buttonConfiguration key="configuration" style="tinted" title="Ver Registro de pasos"/>
+                                <connections>
+                                    <action selector="btnStepDetails:" destination="wAL-F4-coS" eventType="touchUpInside" id="jEE-7S-y0B"/>
+                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iZk-FW-FXW">
                                 <rect key="frame" x="72" y="618" width="256" height="35"/>

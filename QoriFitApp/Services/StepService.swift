@@ -13,8 +13,6 @@ class StepService {
     func getStepSummary(startDate: String, endDate: String? = nil, completion: @escaping (Result<[StepsByDate], Error>) -> Void) {
         let url = "\(ApiService.shared.baseUrl)/step"
         
-        // 1. Construimos el diccionario de parámetros
-        // Ya no necesitamos 'if let' porque endDate es obligatorio según tu firma
         var parameters: [String: Any] = [
                 "startDate": startDate
             ]
@@ -79,4 +77,53 @@ class StepService {
             }
         }
     }
+    
+    func getStepsDetails(startDate: String, endDate: String? = nil,
+                         completion: @escaping (Result<[StepRecordsPerDay], Error>) -> Void) {
+        let url = "\(ApiService.shared.baseUrl)/step/details"
+        
+        var parameters: [String: Any] = [
+            "startDate": startDate
+        ]
+        
+        if let end = endDate {
+            parameters["endDate"] = end
+        }
+        
+        AF.request(url,
+                   method: .get,
+                   parameters: parameters,
+                   encoding: URLEncoding.default,
+                   headers: ApiService.shared.headers)
+        .validate()
+        .responseData { response in
+            
+            if let data = response.data, let str = String(data: data, encoding: .utf8) {
+                print("Contenido real recibido: \(str)")
+            }
+            
+            switch response.result {
+            case .success(let data):
+                do {
+                    let decoder = JSONDecoder()
+                    
+                    let apiResponse = try decoder.decode(ApiResponse<[StepRecordsPerDay]>.self, from: data)
+                    
+                    // CORRECCIÓN: Envolvemos el resultado en .success
+                    completion(.success(apiResponse.data))
+                    
+                } catch {
+                    print("Error decodificando pasos: \(error)")
+                    completion(.failure(error))
+                }
+            case .failure(let error):
+                print("Error de red en StepService: \(error.localizedDescription)")
+                // CORRECCIÓN: Envolvemos el error en .failure
+                completion(.failure(error))
+            }
+        }
+        
+        
+    }
 }
+
