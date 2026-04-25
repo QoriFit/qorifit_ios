@@ -53,9 +53,8 @@ class ProfileViewController: UIViewController {
         
         // Aquí puedes formatear los valores numéricos
         pesoValueLabel.text = prefs.unitWeight
-        
-        // Estos campos dependen de si los guardaste en Core Data
-        edadValueLabel.text = "25 años" // Ejemplo, o sacarlo de prefs
+
+        edadValueLabel.text =  "25 años" // Ejemplo, o sacarlo de prefs
         estaturaValueLabel.text = "1.75 m"
     }
 
@@ -64,30 +63,37 @@ class ProfileViewController: UIViewController {
         activityIndicator.startAnimating()
         view.isUserInteractionEnabled = false
 
-        let today = getTodayDate()
         let group = DispatchGroup()
+        
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        let rangoSemana = self.getWeekRange(for: Date())
 
-        var caloriesData: CaloriesSummary?
-        var stepsData: StepsByDate?
+        var caloriesData: [MealSummaryByDate]?
+        var stepsData: [StepsByDate]?
         var fetchError: Error?
 
-        // 1. Calorías
+        // 1. Calorías (Usando el servicio actualizado que devuelve [MealSummaryByDate])
         group.enter()
-        caloriesService.getCaloriesSummary(date: today) { result in
-            // Usamos el switch para ser consistentes con el estándar
+        caloriesService.getCaloriesSummary(startDate: rangoSemana.start, endDate: rangoSemana.end) { result in
             switch result {
-            case .success(let data): caloriesData = data
-            case .failure(let error): fetchError = error
+            case .success(let lista):
+                caloriesData = lista
+            case .failure(let error):
+                fetchError = error
             }
             group.leave()
         }
 
-        // 2. Pasos
+        // 2. Pasos (Usando el servicio que ya acepta rangos)
         group.enter()
-        stepService.getStepSummary(startDate: today, endDate: today) { result in
+        // Si quieres solo hoy, endDate puede ser el mismo todayStr o nil
+        stepService.getStepSummary(startDate: rangoSemana.start, endDate: rangoSemana.end) { result in
             switch result {
-            case .success(let data): stepsData = data.first
-            case .failure(let error): fetchError = error
+            case .success(let data):
+                stepsData = data
+            case .failure(let error):
+                fetchError = error
             }
             group.leave()
         }
@@ -99,31 +105,42 @@ class ProfileViewController: UIViewController {
 
             if let error = fetchError {
                 print("Error cargando actividad: \(error.localizedDescription)")
-                // No mostramos alerta aquí para no molestar al usuario si solo falló la red
             }
 
+            // Actualizamos la UI con lo que hayamos obtenido
             self.updateActivityUI(calories: caloriesData, steps: stepsData)
         }
     }
+    
+    private func updateActivityUI(calories: [MealSummaryByDate]?, steps: [StepsByDate]?) {
+        
+    
+        let totalPasos = steps?.reduce(0) { $0 + $1.steps } ?? 0
+        pasosValueLabel.text = "\(totalPasos)"
+        
+        // 2. Sumamos todas las calorías de la lista
+        let totalCalorias = calories?.reduce(0.0) { $0 + $1.totalCalories } ?? 0.0
+        caloriasValueLabel.text = String(format: "%.0f kcal", totalCalorias)
+        
+        // 3. Cálculo de distancia (asumiendo 0.8 metros por paso)
+        let distanciaKm = Double(totalPasos) * 0.0008
+        distanciaValueLabel.text = String(format: "%.2f km", distanciaKm)
 
-    private func updateActivityUI(calories: CaloriesSummary?, steps: StepsByDate?) {
-        // Usamos los nombres de propiedades que definimos en tus servicios
-        pasosValueLabel.text = "\(steps?.steps ?? 0)"
-        caloriasValueLabel.text = "\(calories?.calorias ?? 0) kcal"
-        distanciaValueLabel.text = String(format: "%.2f km", calories?.distancia ?? 0)
-
-        let tiempo = calories?.tiempo ?? 0
-        tiempoValueLabel.text = "\(tiempo / 60)h \(tiempo % 60)m"
+        // 4. Cálculo de tiempo estimado (1 min cada 100 pasos aprox)
+        let totalMinutos = totalPasos / 100
+        let horas = totalMinutos / 60
+        let minutos = totalMinutos % 60
+        
+        if horas > 0 {
+            tiempoValueLabel.text = "\(horas)h \(minutos)m"
+        } else {
+            tiempoValueLabel.text = "\(minutos) min"
+        }
     }
 
     // MARK: - Helpers
-    private func getTodayDate() -> String {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: Date())
-    }
 
-    // MARK: - Actions
+
     @IBAction func btnLogOut(_ sender: UIButton) {
         let alert = UIAlertController(title: "Cerrar Sesión", message: "¿Estás seguro?", preferredStyle: .actionSheet)
         alert.addAction(UIAlertAction(title: "Salir", style: .destructive) { _ in
@@ -131,6 +148,24 @@ class ProfileViewController: UIViewController {
         })
         alert.addAction(UIAlertAction(title: "Cancelar", style: .cancel))
         present(alert, animated: true)
+    }
+    
+    func getWeekRange(for date: Date) -> (start: String, end: String) {
+        let calendar = Calendar.current
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        // Obtenemos el intervalo de la semana que contiene a 'date'
+        guard let interval = calendar.dateInterval(of: .weekOfYear, for: date) else {
+            return ("", "")
+        }
+        
+        // El final del intervalo es el primer segundo de la siguiente semana,
+        // por eso restamos 1 segundo para tener el sábado/domingo real.
+        let startDate = interval.start
+        let endDate = calendar.date(byAdding: .second, value: -1, to: interval.end)!
+        
+        return (formatter.string(from: startDate), formatter.string(from: endDate))
     }
     
     func performLogout() {

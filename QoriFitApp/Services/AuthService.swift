@@ -40,7 +40,7 @@ class AuthService {
                         print("Bienvenido")
                         completion(true)
                     } catch {
-                        print("Error al parsear: \(error)") // Aquí es donde fallaba antes
+                        print("Error al parsear: \(error)")
                         completion(false)
                     }
                 case .failure(let error):
