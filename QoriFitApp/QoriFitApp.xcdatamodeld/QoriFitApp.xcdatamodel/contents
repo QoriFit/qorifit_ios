@@ -1,4 +1,20 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="1" systemVersion="11A491" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithCloudKit="false" userDefinedModelVersionIdentifier="">
-    <elements/>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="24837" systemVersion="25C56" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="FoodItemEntity" representedClassName="FoodItemEntity" syncable="YES">
+        <attribute name="foodDesc" attributeType="String"/>
+        <attribute name="id" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="imageName" attributeType="String"/>
+        <attribute name="isFavorite" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="kcal" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+    </entity>
+    <entity name="UserPreferences" representedClassName="UserPreferences" syncable="YES">
+        <attribute name="caloriesGoal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="sessionId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
+        <attribute name="stepsGoal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="unitDistance" optional="YES" attributeType="String"/>
+        <attribute name="unitWeight" optional="YES" attributeType="String"/>
+        <attribute name="username" optional="YES" attributeType="String"/>
+    </entity>
 </model>

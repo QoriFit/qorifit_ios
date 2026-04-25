@@ -6,7 +6,19 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		181F1EEE2F9C5514008C9125 /* UserPreferences+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181F1EED2F9C5514008C9125 /* UserPreferences+CoreDataProperties.swift */; };
+		181F1EEF2F9C5514008C9125 /* UserPreferences+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181F1EEC2F9C5514008C9125 /* UserPreferences+CoreDataClass.swift */; };
+		181F1F672F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181F1F652F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift */; };
+		181F1F682F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181F1F662F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift */; };
+		184E96382F9BF51A00FA6469 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 184E96372F9BF51A00FA6469 /* Alamofire */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
+		181F1EEC2F9C5514008C9125 /* UserPreferences+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserPreferences+CoreDataClass.swift"; sourceTree = "<group>"; };
+		181F1EED2F9C5514008C9125 /* UserPreferences+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserPreferences+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		181F1F652F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodItemEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
+		181F1F662F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodItemEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1846C9B72F8893EF00B009D4 /* QoriFitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QoriFitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -36,6 +48,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				184E96382F9BF51A00FA6469 /* Alamofire in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -45,6 +58,10 @@
 		1846C9AE2F8893EE00B009D4 = {
 			isa = PBXGroup;
 			children = (
+				181F1F652F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift */,
+				181F1F662F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift */,
+				181F1EEC2F9C5514008C9125 /* UserPreferences+CoreDataClass.swift */,
+				181F1EED2F9C5514008C9125 /* UserPreferences+CoreDataProperties.swift */,
 				1846C9B92F8893EF00B009D4 /* QoriFitApp */,
 				1846C9B82F8893EF00B009D4 /* Products */,
 			);
@@ -78,6 +95,7 @@
 			);
 			name = QoriFitApp;
 			packageProductDependencies = (
+				184E96372F9BF51A00FA6469 /* Alamofire */,
 			);
 			productName = QoriFitApp;
 			productReference = 1846C9B72F8893EF00B009D4 /* QoriFitApp.app */;
@@ -107,6 +125,9 @@
 			);
 			mainGroup = 1846C9AE2F8893EE00B009D4;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				184E96362F9BF51A00FA6469 /* XCRemoteSwiftPackageReference "Alamofire" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1846C9B82F8893EF00B009D4 /* Products */;
 			projectDirPath = "";
@@ -132,6 +153,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				181F1F672F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift in Sources */,
+				181F1F682F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift in Sources */,
+				181F1EEE2F9C5514008C9125 /* UserPreferences+CoreDataProperties.swift in Sources */,
+				181F1EEF2F9C5514008C9125 /* UserPreferences+CoreDataClass.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -150,6 +175,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -181,6 +207,7 @@
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
 				INFOPLIST_KEY_UIMainStoryboardFile = Main;
+				INFOPLIST_KEY_UIStatusBarStyle = "";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -341,6 +368,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		184E96362F9BF51A00FA6469 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.11.2;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		184E96372F9BF51A00FA6469 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 184E96362F9BF51A00FA6469 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1846C9AF2F8893EF00B009D4 /* Project object */;
 }
