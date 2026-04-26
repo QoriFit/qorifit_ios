@@ -80,6 +80,9 @@ class StepsDetailsViewController: UIViewController {
     }
 
     @objc private func loadMoreData() {
+        loadMoreButton.setTitle("Cargando...", for: .normal)
+        loadMoreButton.isEnabled = false
+        
         currentMonthOffset += 1
         fetchStepsDetails(offset: currentMonthOffset)
     }
@@ -89,10 +92,12 @@ class StepsDetailsViewController: UIViewController {
         activityIndicator.hidesWhenStopped = true
         view.addSubview(activityIndicator)
     }
+    
 }
 
 
 
+// MARK: CONFIG DE TABLEVIEW
 
 extension StepsDetailsViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -106,13 +111,11 @@ extension StepsDetailsViewController: UITableViewDelegate, UITableViewDataSource
         return count
     }
     
-    // 3. Título de la sección (Fecha y Total)
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         let dayData = stepsData[section]
         return "\(dayData.date) - Total: \(dayData.totalStepsPerDay) pasos"
     }
-    
-    // 4. Configuración de la celda (SubItem)
+
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "StepRecordCell", for: indexPath)
         let record = stepsData[indexPath.section].records[indexPath.row]

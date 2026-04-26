@@ -9,12 +9,15 @@
         <attribute name="name" attributeType="String"/>
     </entity>
     <entity name="UserPreferences" representedClassName="UserPreferences" syncable="YES">
-        <attribute name="caloriesGoal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="age" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="caloriesGoal" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="height" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="sessionId" optional="YES" attributeType="UUID" usesScalarValueType="NO"/>
-        <attribute name="stepsGoal" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="stepsGoal" optional="YES" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="unitDistance" optional="YES" attributeType="String"/>
         <attribute name="unitWeight" optional="YES" attributeType="String"/>
         <attribute name="username" optional="YES" attributeType="String"/>
+        <attribute name="weight" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES"/>
     </entity>
 </model>

@@ -112,6 +112,30 @@ class HomeViewController: UIViewController {
     
     
     
+    @IBAction func btnRegisterMeal(_ sender: UIButton) {
+        
+        goToRegisterMeal()
+    }
+    
 
+    
+    func goToRegisterMeal() {
+        // 1. Apuntamos al Storyboard de Recetas
+        let storyboard = UIStoryboard(name: "Recipes", bundle: nil)
 
+        // 2. Instanciamos el Navigation Controller por su ID
+        if let navVC = storyboard.instantiateViewController(withIdentifier: "MainRecipesViewController") as? UINavigationController {
+            
+            // 3. Configuración de presentación
+            navVC.modalPresentationStyle = .fullScreen
+            navVC.modalTransitionStyle = .crossDissolve
+            
+            // 4. Presentamos en el hilo principal
+            DispatchQueue.main.async {
+                self.present(navVC, animated: true, completion: nil)
+            }
+        } else {
+            print("Error: No se encontró un UINavigationController con el ID MainRecipesViewController")
+        }
+    }
 }

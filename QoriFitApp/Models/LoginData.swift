@@ -20,4 +20,7 @@ struct UserSettings: Codable {
     let maxCaloriesPerDay: Int
     let birthDate: String
     let goal: String?
+    
+    let weight : Double
+    let height : Int32
 }

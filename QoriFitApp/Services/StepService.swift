@@ -10,49 +10,43 @@ import Alamofire
 
 class StepService {
     
-    func getStepSummary(startDate: String, endDate: String? = nil, completion: @escaping (Result<[StepsByDate], Error>) -> Void) {
+    func getStepSummary(startDate: String, endDate: String? = nil,
+                        completion: @escaping (Result<[StepsByDate], Error>) -> Void) {
         let url = "\(ApiService.shared.baseUrl)/step"
         
-        var parameters: [String: Any] = [
-                "startDate": startDate
-            ]
+        var parameters: [String: Any] = ["startDate": startDate]
+        if let end = endDate { parameters["endDate"] = end }
         
-        if let end = endDate {
-                parameters["endDate"] = end
-            }
-        
-        AF.request(url,
-                   method: .get,
-                   parameters: parameters,
+        AF.request(url, method: .get, parameters: parameters,
                    encoding: URLEncoding.default,
                    headers: ApiService.shared.headers)
-        .validate()
-        .responseData { response in
-            
-            if let data = response.data, let str = String(data: data, encoding: .utf8) {
-                print("Contenido real recibido: \(str)")
-            }
-            
-            switch response.result {
-            case .success(let data):
-                do {
-                    let decoder = JSONDecoder()
-                    
-                    let apiResponse = try decoder.decode(ApiResponse<[StepsByDate]>.self, from: data)
-                    
-                    // CORRECCIÓN: Envolvemos el resultado en .success
-                    completion(.success(apiResponse.data))
-                    
-                } catch {
-                    print("Error decodificando pasos: \(error)")
-                    completion(.failure(error))
+            .responseData { response in
+                
+                let decoder = JSONDecoder()
+                
+                switch response.result {
+                case .success(let data):
+                    do {
+                        let apiResponse = try decoder.decode(ApiResponse<[StepsByDate]>.self, from: data)
+                        
+                        if apiResponse.code == 1000 {
+                            // Desempaquetamos: si data es nil, mandamos array vacío
+                            completion(.success(apiResponse.data ?? []))
+                        } else {
+                            completion(.failure(BusinessError(code: apiResponse.code, message: apiResponse.message ?? "Error")))
+                        }
+                    } catch {
+                        completion(.failure(error))
+                    }
+                case .failure(let error):
+                    if let data = response.data,
+                       let apiResponse = try? decoder.decode(ApiResponse<[StepsByDate]>.self, from: data) {
+                        completion(.failure(BusinessError(code: apiResponse.code, message: apiResponse.message ?? "Error")))
+                    } else {
+                        completion(.failure(error))
+                    }
                 }
-            case .failure(let error):
-                print("Error de red en StepService: \(error.localizedDescription)")
-                // CORRECCIÓN: Envolvemos el error en .failure
-                completion(.failure(error))
             }
-        }
     }
     
     func registerSteps(date: String, stepCount: Int, completion: @escaping (Result<Void, Error>) -> Void) {
@@ -82,48 +76,41 @@ class StepService {
                          completion: @escaping (Result<[StepRecordsPerDay], Error>) -> Void) {
         let url = "\(ApiService.shared.baseUrl)/step/details"
         
-        var parameters: [String: Any] = [
-            "startDate": startDate
-        ]
+        var parameters: [String: Any] = ["startDate": startDate]
+        if let end = endDate { parameters["endDate"] = end }
         
-        if let end = endDate {
-            parameters["endDate"] = end
-        }
-        
-        AF.request(url,
-                   method: .get,
-                   parameters: parameters,
+        AF.request(url, method: .get, parameters: parameters,
                    encoding: URLEncoding.default,
                    headers: ApiService.shared.headers)
-        .validate()
-        .responseData { response in
-            
-            if let data = response.data, let str = String(data: data, encoding: .utf8) {
-                print("Contenido real recibido: \(str)")
-            }
-            
-            switch response.result {
-            case .success(let data):
-                do {
-                    let decoder = JSONDecoder()
-                    
-                    let apiResponse = try decoder.decode(ApiResponse<[StepRecordsPerDay]>.self, from: data)
-                    
-                    // CORRECCIÓN: Envolvemos el resultado en .success
-                    completion(.success(apiResponse.data))
-                    
-                } catch {
-                    print("Error decodificando pasos: \(error)")
-                    completion(.failure(error))
+            .responseData { response in
+                
+                let decoder = JSONDecoder()
+                
+                switch response.result {
+                case .success(let data):
+                    do {
+                        let apiResponse = try decoder.decode(ApiResponse<[StepRecordsPerDay]>.self, from: data)
+                        
+                        if apiResponse.code == 1000 {
+                            // Desempaquetamos: si data es nil, mandamos array vacío
+                            completion(.success(apiResponse.data ?? []))
+                        } else {
+                            let bizError = BusinessError(code: apiResponse.code, message: apiResponse.message ?? "Error en detalles")
+                            completion(.failure(bizError))
+                        }
+                    } catch {
+                        completion(.failure(error))
+                    }
+                case .failure(let error):
+                    // Intentamos ver si el error trae un JSON de negocio (ej: 400 con código interno)
+                    if let data = response.data,
+                       let apiResponse = try? decoder.decode(ApiResponse<[StepRecordsPerDay]>.self, from: data) {
+                        completion(.failure(BusinessError(code: apiResponse.code, message: apiResponse.message ?? "Error")))
+                    } else {
+                        completion(.failure(error))
+                    }
                 }
-            case .failure(let error):
-                print("Error de red en StepService: \(error.localizedDescription)")
-                // CORRECCIÓN: Envolvemos el error en .failure
-                completion(.failure(error))
             }
-        }
-        
-        
     }
 }
 
