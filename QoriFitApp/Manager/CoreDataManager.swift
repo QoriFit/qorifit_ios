@@ -32,7 +32,7 @@ class CoreDataManager {
     }
 
     // Guardar o Actualizar preferencias
-    func savePreferences(steps: Int32, calories: Int32, session: UUID, distUnit: String, weightUnit: String, username: String, email: String, high:Int32, weight: Double) {
+    func savePreferences(steps: Int32, calories: Int32, session: UUID, distUnit: String, weightUnit: String, username: String, email: String, high:Int32, weight: Double, birthdate: Date) {
         let fetchRequest: NSFetchRequest<UserPreferences> = UserPreferences.fetchRequest()
         
         do {
@@ -48,6 +48,7 @@ class CoreDataManager {
             prefs.email = email
             prefs.height = high
             prefs.weight = weight
+            prefs.birthdate = birthdate
             
             try context.save()
             print("Datos guardados en Core Data")

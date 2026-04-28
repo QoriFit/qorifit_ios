@@ -9,16 +9,16 @@
 /* Begin PBXBuildFile section */
 		181F1F672F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181F1F652F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift */; };
 		181F1F682F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 181F1F662F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift */; };
-		182AE56B2F9DCC5100A6AF35 /* UserPreferences+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AE56A2F9DCC5100A6AF35 /* UserPreferences+CoreDataProperties.swift */; };
-		182AE56C2F9DCC5100A6AF35 /* UserPreferences+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AE5692F9DCC5100A6AF35 /* UserPreferences+CoreDataClass.swift */; };
+		182AE6A12FA0588900A6AF35 /* UserPreferences+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AE69F2FA0588900A6AF35 /* UserPreferences+CoreDataClass.swift */; };
+		182AE6A22FA0588900A6AF35 /* UserPreferences+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 182AE6A02FA0588900A6AF35 /* UserPreferences+CoreDataProperties.swift */; };
 		184E96382F9BF51A00FA6469 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 184E96372F9BF51A00FA6469 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		181F1F652F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodItemEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		181F1F662F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "FoodItemEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
-		182AE5692F9DCC5100A6AF35 /* UserPreferences+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserPreferences+CoreDataClass.swift"; sourceTree = "<group>"; };
-		182AE56A2F9DCC5100A6AF35 /* UserPreferences+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserPreferences+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		182AE69F2FA0588900A6AF35 /* UserPreferences+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserPreferences+CoreDataClass.swift"; sourceTree = "<group>"; };
+		182AE6A02FA0588900A6AF35 /* UserPreferences+CoreDataProperties.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserPreferences+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		1846C9B72F8893EF00B009D4 /* QoriFitApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QoriFitApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -58,8 +58,8 @@
 		1846C9AE2F8893EE00B009D4 = {
 			isa = PBXGroup;
 			children = (
-				182AE5692F9DCC5100A6AF35 /* UserPreferences+CoreDataClass.swift */,
-				182AE56A2F9DCC5100A6AF35 /* UserPreferences+CoreDataProperties.swift */,
+				182AE69F2FA0588900A6AF35 /* UserPreferences+CoreDataClass.swift */,
+				182AE6A02FA0588900A6AF35 /* UserPreferences+CoreDataProperties.swift */,
 				181F1F652F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift */,
 				181F1F662F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift */,
 				1846C9B92F8893EF00B009D4 /* QoriFitApp */,
@@ -154,9 +154,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				181F1F672F9CDF4F008C9125 /* FoodItemEntity+CoreDataClass.swift in Sources */,
-				182AE56B2F9DCC5100A6AF35 /* UserPreferences+CoreDataProperties.swift in Sources */,
-				182AE56C2F9DCC5100A6AF35 /* UserPreferences+CoreDataClass.swift in Sources */,
 				181F1F682F9CDF4F008C9125 /* FoodItemEntity+CoreDataProperties.swift in Sources */,
+				182AE6A12FA0588900A6AF35 /* UserPreferences+CoreDataClass.swift in Sources */,
+				182AE6A22FA0588900A6AF35 /* UserPreferences+CoreDataProperties.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

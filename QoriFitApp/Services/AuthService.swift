@@ -81,8 +81,12 @@ class AuthService {
     private func saveUserSession(_ data: LoginData) {
 
         ApiService.shared.saveToken(token: data.accessToken)
-
         UserDefaults.standard.set(data.username, forKey: "user_name")
+
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        
+        let birthDateConverted = formatter.date(from: data.userData.birthDate) ?? Date()
         
         CoreDataManager.shared.savePreferences(
             steps: Int32(data.userData.stepsGoalPerDay),
@@ -93,7 +97,8 @@ class AuthService {
             username: data.username,
             email: data.email,
             high: data.userData.height,
-            weight: data.userData.weight
+            weight: data.userData.weight,
+            birthdate: birthDateConverted
         )
     }
 }

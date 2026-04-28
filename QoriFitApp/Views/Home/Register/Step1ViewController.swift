@@ -24,14 +24,22 @@ class Step1ViewController: UIViewController {
         }
     }
 
-    /*
-    // MARK: - Navigation
 
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destination.
-        // Pass the selected object to the new view controller.
+    @IBAction func btnBack(_ sender: Any) {
+        
+        goToMain()
     }
-    */
+    
+    func goToMain() {
+        let storyboard = UIStoryboard(name: "Main", bundle: nil)
 
+        let mainVc = storyboard.instantiateViewController(withIdentifier: "MainViewController")
+        
+        mainVc.modalPresentationStyle = .fullScreen
+        mainVc.modalTransitionStyle = .crossDissolve
+        
+        DispatchQueue.main.async {
+            self.present(mainVc, animated: true, completion: nil)
+        }
+    }
 }

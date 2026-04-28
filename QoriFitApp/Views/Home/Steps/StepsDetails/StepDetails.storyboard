@@ -60,7 +60,7 @@
                             </tableView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="vDu-zF-Fre"/>
-                        <color key="backgroundColor" systemColor="systemBackgroundColor"/>
+                        <color key="backgroundColor" red="0.44463894612782473" green="0.76835992309122492" blue="0.84320312500000005" alpha="0.85717429577464788" colorSpace="custom" customColorSpace="displayP3"/>
                         <constraints>
                             <constraint firstItem="0z4-ld-cFh" firstAttribute="bottom" secondItem="vDu-zF-Fre" secondAttribute="bottom" id="7Cd-SO-dqI"/>
                             <constraint firstItem="vDu-zF-Fre" firstAttribute="trailing" secondItem="exJ-i5-AcR" secondAttribute="trailing" id="D26-jZ-whU"/>

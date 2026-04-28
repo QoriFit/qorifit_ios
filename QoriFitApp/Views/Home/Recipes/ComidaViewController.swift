@@ -2,6 +2,7 @@ import UIKit
 
 class ComidaViewController: UIViewController {
 
+    @IBOutlet weak var lblCurrentDate: UILabel!
     // MARK: - IBOutlets
     @IBOutlet weak var caloriesCircleView: UIView!
     @IBOutlet weak var caloriesLabel: UILabel!
@@ -30,7 +31,6 @@ class ComidaViewController: UIViewController {
     private func setupUI() {
         caloriesCircleView.layer.cornerRadius = caloriesCircleView.frame.width / 2
         caloriesCircleView.clipsToBounds = true
-        caloriesCircleView.backgroundColor = .systemGray6
 
         caloriesLabel.text = "0"
         caloriesSubtitleLabel.text = "kcal"
@@ -65,13 +65,16 @@ class ComidaViewController: UIViewController {
     }
 
     // MARK: - IBActions
-
+    
     @IBAction func registerCaloriesTapped(_ sender: UIButton) {
         let storyboard = UIStoryboard(name: "Recipes", bundle: nil)
         if let recipesVC = storyboard.instantiateViewController(withIdentifier: "RecipeListViewController") as? RecipeListViewController {
             recipesVC.mode = .register
             recipesVC.delegate = self
-            navigationController?.pushViewController(recipesVC, animated: true)
+            
+            // En lugar de push, usamos present
+            recipesVC.modalPresentationStyle = .pageSheet // O .fullScreen
+            self.present(recipesVC, animated: true)
         }
     }
 
@@ -121,6 +124,15 @@ class ComidaViewController: UIViewController {
         errorLabel.text = message
         errorLabel.isHidden = false
     }
+    
+    func loadCurrentDate() {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "es_PE")
+        formatter.dateFormat = "EEEE, d 'de' MMMM"
+        let fechaHoy = formatter.string(from: Date())
+        lblCurrentDate.text = fechaHoy.capitalized
+    }
+
 }
 
 // MARK: - UICollectionView
@@ -139,10 +151,13 @@ extension ComidaViewController: UICollectionViewDataSource, UICollectionViewDele
 
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         let recipe = recipes[indexPath.item]
-        let storyboard = UIStoryboard(name: "Main", bundle: nil)
+        let storyboard = UIStoryboard(name: "Recipes", bundle: nil)
+        
         if let detailVC = storyboard.instantiateViewController(withIdentifier: "RecipeDetailViewController") as? RecipeDetailViewController {
             detailVC.recipeId = recipe.recipeId
-            navigationController?.pushViewController(detailVC, animated: true)
+            
+            detailVC.modalPresentationStyle = .pageSheet // Estilo
+            self.present(detailVC, animated: true)
         }
     }
 }

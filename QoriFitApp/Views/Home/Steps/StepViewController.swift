@@ -1,8 +1,14 @@
 import UIKit
 
 class StepViewController: UIViewController {
+    
+    private var offsetValue: Int = 0
+    
 
     // MARK: - IBOutlets (conectar desde Storyboard)
+    @IBOutlet weak var lblRange: UILabel!
+    @IBOutlet weak var stpRange: UIStepper!
+    @IBOutlet weak var lblCurrentDate: UILabel!
     @IBOutlet weak var periodSegmentedControl: UISegmentedControl!
     @IBOutlet weak var stepsCircleView: UIView!
     @IBOutlet weak var stepsLabel: UILabel!
@@ -25,8 +31,16 @@ class StepViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         title = "Pasos"
+        
+
+        currentPeriod = .day
+        periodSegmentedControl.selectedSegmentIndex = currentPeriod.rawValue
+        
         setupUI()
-        loadSteps()
+        
+        resetStepper()
+        
+        loadCurrentDate()
     }
 
     // MARK: - Setup
@@ -48,11 +62,6 @@ class StepViewController: UIViewController {
 
     // MARK: - IBActions
 
-    @IBAction func periodChanged(_ sender: UISegmentedControl) {
-        guard let period = StepPeriod(rawValue: sender.selectedSegmentIndex) else { return }
-        currentPeriod = period
-        loadSteps()
-    }
 
     @IBAction func registerButtonTapped(_ sender: UIButton) {
         showRegisterAlert()
@@ -84,7 +93,7 @@ class StepViewController: UIViewController {
                         strongSelf.showError(error.localizedDescription)
                     }
                 }
-            } // <-- Aquí cierra el getStepSummary
+            }
         }
 
     private func updateUI(with entries: [StepsByDate]) {
@@ -214,4 +223,108 @@ class StepViewController: UIViewController {
         }
     }
     
+    func loadCurrentDate() {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "es_PE")
+        formatter.dateFormat = "EEEE, d 'de' MMMM"
+        let fechaHoy = formatter.string(from: Date())
+        lblCurrentDate.text = fechaHoy.capitalized
+    }
+
+    
+}
+
+extension StepViewController{
+    
+
+    private func resetStepper() {
+        offsetValue = 0
+        stpRange.value = 0
+        stpRange.minimumValue = -100 // Permite ir hasta 100 periodos atrás
+        stpRange.maximumValue = 0    // 0 es el presente (no podemos ver el futuro)
+        updateRangeLabelAndLoadData()
+    }
+    
+    func dateRange(for period: StepPeriod, offset: Int) -> (String, String, String) {
+        let cal = Calendar.current
+        let today = Date()
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "es_PE")
+        
+        var startDate: Date
+        var endDate: Date
+        var labelText: String
+
+        switch period {
+        case .day:
+            startDate = cal.date(byAdding: .day, value: offset, to: today)!
+            endDate = startDate
+            formatter.dateFormat = "d 'de' MMMM"
+            labelText = offset == 0 ? "Hoy" : formatter.string(from: startDate)
+
+        case .week:
+            // Calculamos el inicio de la semana actual (lunes o domingo según config)
+            let currentWeekStart = cal.dateInterval(of: .weekOfYear, for: today)!.start
+            startDate = cal.date(byAdding: .weekOfYear, value: offset, to: currentWeekStart)!
+            endDate = cal.date(byAdding: .day, value: 6, to: startDate)!
+            
+            formatter.dateFormat = "d MMM"
+            labelText = "\(formatter.string(from: startDate)) - \(formatter.string(from: endDate))"
+
+        case .month:
+            let currentMonthStart = cal.dateInterval(of: .month, for: today)!.start
+            startDate = cal.date(byAdding: .month, value: offset, to: currentMonthStart)!
+            
+            // Obtener último día del mes
+            let range = cal.range(of: .day, in: .month, for: startDate)!
+            endDate = cal.date(byAdding: .day, value: range.count - 1, to: startDate)!
+            
+            formatter.dateFormat = "MMMM yyyy"
+            labelText = formatter.string(from: startDate).capitalized
+        }
+
+        return (isoDate(startDate), isoDate(endDate), labelText)
+    }
+    
+    @IBAction func stepperValueChanged(_ sender: UIStepper) {
+        offsetValue = Int(sender.value)
+        updateRangeLabelAndLoadData()
+    }
+
+    @IBAction func periodChanged(_ sender: UISegmentedControl) {
+        guard let period = StepPeriod(rawValue: sender.selectedSegmentIndex) else { return }
+        currentPeriod = period
+        resetStepper()
+    }
+
+    private func updateRangeLabelAndLoadData() {
+        let range = self.dateRange(for: currentPeriod, offset: offsetValue)
+        lblRange.text = range.2 // El texto formateado (ej: "Marzo 2024")
+        
+        // Llamamos a la carga de datos con las fechas del rango
+        loadSteps(start: range.0, end: range.1)
+    }
+
+    // Modificamos loadSteps para recibir las fechas
+    private func loadSteps(start: String? = nil, end: String? = nil) {
+        errorLabel.isHidden = true
+        activityIndicator.startAnimating()
+        
+        // Si no vienen fechas (ej: primer load), usamos el rango del offset actual
+        let finalRange = (start != nil && end != nil) ? (start!, end!) :
+                         (dateRange(for: currentPeriod, offset: offsetValue).0,
+                          dateRange(for: currentPeriod, offset: offsetValue).1)
+
+        stepService.getStepSummary(startDate: finalRange.0, endDate: finalRange.1) { [weak self] result in
+            DispatchQueue.main.async {
+                self?.activityIndicator.stopAnimating()
+                switch result {
+                case .success(let entries):
+                    self?.updateUI(with: entries)
+                case .failure(let error):
+                    self?.showError(error.localizedDescription)
+                }
+            }
+        }
+    }
 }

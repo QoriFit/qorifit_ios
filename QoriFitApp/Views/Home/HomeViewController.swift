@@ -9,133 +9,121 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
-    @IBOutlet weak var lblCurrentDate: UILabel!
+    @IBOutlet weak var lblUsername: UILabel!
     
+    @IBOutlet weak var lblGreetings: UILabel!
+    @IBOutlet weak var pbStepsToday: UIProgressView!
+    @IBOutlet weak var pbCaloriesToday: UIProgressView!
+    
+    @IBOutlet weak var lblCurrentDate: UILabel!
     @IBOutlet weak var lblTodayStepsCount: UILabel!
-    @IBOutlet weak var lblTodayCalories: UILabel!
+    @IBOutlet weak var lblTodayCaloriesCount: UILabel!
+    
     let stepService = StepService()
+    let mealService = ComidaService()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        setupUI()
+        loadCurrentDate()
+        setupGreetings()
+    }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        setupHomeData()
+        refreshDashboardData()
     }
     
-    
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        
-        setupHomeData()
-        loadCurrentDate()
-        
-        loadTodaySteps()
-        
-        loadTodayCalories()
-        
-
-    }
-    
-    func setupHomeData() {
-        var metaPasos: Int = 0
-        if let prefs = CoreDataManager.shared.getPreferences() {
-            metaPasos = Int(prefs.stepsGoal)
+    private func setupUI() {
+        // Configuramos el grosor de ambas barras (pbStepsToday y pbCaloriesToday)
+        [pbStepsToday, pbCaloriesToday].forEach { pb in
+            pb?.transform = pb?.transform.scaledBy(x: 1, y: 10) ?? .identity
+            pb?.layer.cornerRadius = 8
+            pb?.clipsToBounds = true
+            pb?.subviews.forEach { $0.clipsToBounds = true }
+            if let fillLayer = pb?.subviews.last {
+                fillLayer.layer.cornerRadius = 8
+            }
         }
-
+    }
+    
+    func refreshDashboardData() {
+        guard let prefs = CoreDataManager.shared.getPreferences() else { return }
+        
+        let metaPasos = Int(prefs.stepsGoal)
+        let metaCalorias = Double(prefs.caloriesGoal)
+        
         let formatter = DateFormatter()
         formatter.dateFormat = "yyyy-MM-dd"
-        let currentDate = formatter.string(from: Date())
+        let today = formatter.string(from: Date())
 
-        // El cambio principal está en cómo manejamos el 'result'
-        stepService.getStepSummary(startDate: currentDate) { [weak self] result in
+        // 1. Cargar Pasos
+        stepService.getStepSummary(startDate: today) { [weak self] result in
             DispatchQueue.main.async {
                 switch result {
-                case .success(let listaPasos):
-                    // Accedemos al primer elemento del array.
-                    // OJO: Asegúrate si es .steps o .stepCount según tu modelo
-                    let pasosActuales = listaPasos.first?.steps ?? 0
-                    self?.updateStepsUI(current: pasosActuales, goal: metaPasos)
-                    
+                case .success(let lista):
+                    let actuales = lista.first?.steps ?? 0
+                    self?.updateProgress(pb: self?.pbStepsToday, lbl: self?.lblTodayStepsCount, current: Double(actuales), goal: Double(metaPasos), suffix: "pasos")
+                case .failure:
+                    self?.updateProgress(pb: self?.pbStepsToday, lbl: self?.lblTodayStepsCount, current: 0, goal: Double(metaPasos), suffix: "pasos")
+                }
+            }
+        }
+        
+        // 2. Cargar Calorías usando tu nuevo servicio
+        mealService.fetchCaloriesSummary(date: today) { [weak self] result in
+            DispatchQueue.main.async {
+                switch result {
+                case .success(let summary):
+                    // Usamos totalCalories que viene de tu backend
+                    let caloriasConsumidas = summary.totalCalories
+                    self?.updateProgress(pb: self?.pbCaloriesToday, lbl: self?.lblTodayCaloriesCount, current: Double(caloriasConsumidas), goal: metaCalorias, suffix: "kcal")
                 case .failure(let error):
-                    print("Error al obtener pasos: \(error)")
-                    // En caso de error, mostramos 0 o lo que prefieras
-                    self?.updateStepsUI(current: 0, goal: metaPasos)
+                    print("Error en resumen de calorías: \(error)")
+                    self?.updateProgress(pb: self?.pbCaloriesToday, lbl: self?.lblTodayCaloriesCount, current: 0, goal: metaCalorias, suffix: "kcal")
                 }
             }
         }
     }
 
-    func updateStepsUI(current: Int, goal: Int) {
-        // Formateamos el string para que se vea "Actual / Meta"
-        lblTodayStepsCount.text = "\(current) / \(goal)"
+    func updateProgress(pb: UIProgressView?, lbl: UILabel?, current: Double, goal: Double, suffix: String) {
+        let percent = goal > 0 ? Float(current / goal) : 0
+        pb?.setProgress(percent, animated: true)
         
-        // Opcional: Si quieres ponerle un color diferente si llegó a la meta
+        lbl?.text = "\(Int(current)) / \(Int(goal)) \(suffix)"
+        
         if current >= goal && goal > 0 {
-            lblTodayStepsCount.textColor = .systemGreen
+            pb?.progressTintColor = .systemGreen
         } else {
-            lblTodayStepsCount.textColor = .label // Color de texto estándar
+            // Azul para pasos, Naranja para calorías (estilo QoriFit)
+            pb?.progressTintColor = (suffix == "pasos") ? .systemBlue : .systemOrange
         }
     }
     
-    func loadTodaySteps() {
+    func loadCurrentDate() {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "es_PE")
-        formatter.dateFormat = "yyyy-MM-dd"
-        let currentDate = formatter.string(from: Date())
-        
-        stepService.getStepSummary(startDate: currentDate) { result in
-
-            switch result {
-            case .success(let lista):
-                print("¡Pasos cargados correctamente!: \(lista.count)")
-                // Aquí puedes hacer algo con la lista si lo necesitas
-                
-            case .failure(let error):
-                print("Error de red o de parseo: \(error.localizedDescription)")
-            }
+        formatter.dateFormat = "EEEE, d 'de' MMMM"
+        let fechaHoy = formatter.string(from: Date())
+        lblCurrentDate.text = fechaHoy.capitalized
+    }
+    
+    private func setupGreetings() {
+        // 1. Obtener preferencias para el nombre
+        if let prefs = CoreDataManager.shared.getPreferences() {
+            lblUsername.text = prefs.username ?? "Usuario"
         }
-    }
-    
-    func loadTodayCalories(){
         
-    }
-    
-    
-    func loadCurrentDate() -> Void{
-        let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "es_PE")
-            formatter.dateFormat = "EEEE, d 'de' MMMM"
-            let fechaHoy = formatter.string(from: Date())
-            lblCurrentDate.text = fechaHoy.capitalized
+        // 2. Determinar el saludo según la hora
+        let hour = Calendar.current.component(.hour, from: Date())
         
-    }
-    
-    
-    
-    @IBAction func btnRegisterMeal(_ sender: UIButton) {
-        
-        goToRegisterMeal()
-    }
-    
-
-    
-    func goToRegisterMeal() {
-        // 1. Apuntamos al Storyboard de Recetas
-        let storyboard = UIStoryboard(name: "Recipes", bundle: nil)
-
-        // 2. Instanciamos el Navigation Controller por su ID
-        if let navVC = storyboard.instantiateViewController(withIdentifier: "MainRecipesViewController") as? UINavigationController {
-            
-            // 3. Configuración de presentación
-            navVC.modalPresentationStyle = .fullScreen
-            navVC.modalTransitionStyle = .crossDissolve
-            
-            // 4. Presentamos en el hilo principal
-            DispatchQueue.main.async {
-                self.present(navVC, animated: true, completion: nil)
-            }
-        } else {
-            print("Error: No se encontró un UINavigationController con el ID MainRecipesViewController")
+        switch hour {
+        case 4..<12:
+            lblGreetings.text = "Buenos días ☀️"
+        case 12..<18:
+            lblGreetings.text = "Buenas tardes 🌅"
+        default: // De 18:00 a 3:59
+            lblGreetings.text = "Buenas noches 🌙"
         }
     }
 }

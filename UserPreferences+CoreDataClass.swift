@@ -2,7 +2,7 @@
 //  UserPreferences+CoreDataClass.swift
 //  QoriFitApp
 //
-//  Created by LifoX404 on 25/04/26.
+//  Created by LifoX404 on 27/04/26.
 //
 //
 
